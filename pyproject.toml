@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "Art-REST-API"
+version = "0.1.0"
+description = ""
+authors = ["Mikhail Ovechkin <mpvglondon@vk.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0"
+psycopg2-binary = "^2.9.9"
+django-environ = "^0.11.2"
+django-ninja = "^1.1.0"
+punq = "^0.7.0"
+django-cors-headers = "^4.5.0"
+pillow = "^11.0.0"
+django-nested-admin = "^4.1.1"
+gunicorn = "^23.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

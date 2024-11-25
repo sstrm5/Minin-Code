@@ -1,0 +1,9 @@
+.vscode/
+.venv/
+*.pyc
+.env
+core/project/settings/local.py
+static/*
+!static/.gitkeep
+*.sqlite*
+media/*

@@ -1,0 +1,57 @@
+version: '3.9'
+networks:
+  dev:
+    external: true
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file:
+     - ../.env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+    networks:
+      - dev
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   env_file:
+  #    - ../.env
+  #   ports:
+  #     - "${PGADMIN_PORT}:80"
+  #   volumes:
+  #    - pgadmin_data:/var/lib/pgadmin
+  #   depends_on:
+  #    - postgres
+  #   networks:
+  #     - dev
+  
+  # nginx:
+  #  image: nginx:latest
+  #  container_name: nginx
+  #  env_file:
+  #   - ../.env
+  #  ports:
+  #    - "${NGINX_PORT}:80"
+  #  volumes:
+  #    - "../nginx.conf:/etc/nginx/nginx.conf"
+  #    - staticfiles:/static
+  #  networks:
+  #    - dev
+  #  depends_on:
+  #   - postgres
+  #   - pgadmin
+  #   - main-app
+   
+
+volumes:
+  pg_data:
+  pgadmin_data:
+  staticfiles:
+

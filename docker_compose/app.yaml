@@ -1,0 +1,27 @@
+version: '3.9'
+networks:
+  dev:
+    external: true
+
+services:
+  django:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: django
+    ports: 
+      - "${DJANGO_PORT}:8000"
+    command: "sh /entrypoint.sh"
+    env_file:
+     - ../.env
+    depends_on:
+     - postgres
+    volumes:
+      - ..:/app/
+      - staticfiles:/app/static
+    networks:
+      - dev
+
+
+volumes:
+  staticfiles:
