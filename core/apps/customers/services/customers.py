@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import time
 from uuid import uuid4
 
-from core.apps.customers.entities import Customer as CustomerEntity
+from core.apps.customers.entities import CustomerEntity
 from core.apps.customers.exceptions.customers import RefreshTokenExpiredException, RefreshTokenNotFoundException
 from core.apps.customers.models import Customer
 
@@ -33,6 +33,11 @@ class ORMCustomerService(BaseCustomerService):
 
     def get(self, email: str) -> CustomerEntity:
         customer = Customer.objects.get(email=email)
+
+        return customer.to_entity()
+
+    def get_by_token(self, token: str) -> CustomerEntity:
+        customer = Customer.objects.get(access_token=token)
 
         return customer.to_entity()
 

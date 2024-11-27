@@ -3,7 +3,8 @@ import datetime
 
 
 @dataclass
-class Customer:
+class CustomerEntity:
+    id: str
     email: str
     first_name: str
     last_name: str
