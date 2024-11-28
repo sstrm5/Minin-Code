@@ -4,7 +4,8 @@ from core.api.v1.events.schemas import AddEventSchema, EventListOutSchema, SignS
 from core.apps.customers.services.customers import ORMCustomerService
 from core.apps.customers.services.senders import MailSenderService
 from core.apps.events.services import ORMEventsService
-from ninja import Router, Header
+from ninja import Router, Header, File
+from ninja.files import UploadedFile
 
 from core.apps.events.use_cases import AddEventUseCase, SignUseCase
 
@@ -21,14 +22,25 @@ def get_list_events(
     return ApiResponse(data=ListResponse(items=items))
 
 
+@router.get('/get_event/{event_id}', response=ApiResponse)
+def get_event(
+    request: HttpRequest,
+    event_id: int,
+):
+    service = ORMEventsService()
+    event = service.get_event(event_id=event_id)
+    return ApiResponse(data=event)
+
+
 @router.post('/add_event', response=ApiResponse)
 def add_event(
     request: HttpRequest,
     schema: AddEventSchema,
     token: str = Header(alias='Auth-Token'),
+    file: UploadedFile = File(alias='image'),
 ):
     use_case = AddEventUseCase(ORMCustomerService(), ORMEventsService())
-    event = use_case.execute(token=token, schema=schema)
+    event = use_case.execute(token=token, schema=schema, file=file)
     return ApiResponse(data=EventListOutSchema.from_entity(event))
 
 

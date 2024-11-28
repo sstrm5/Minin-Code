@@ -1,12 +1,11 @@
 from django.http import HttpRequest
 from ninja import Router, Header, File
-
+from ninja.files import UploadedFile
 from core.api.schemas import ApiResponse
 from core.api.v1.news.schemas import CreateNewsSchema
 from core.apps.customers.services.customers import ORMCustomerService
 from core.apps.news.services import ORMNewsService
 from core.apps.news.use_cases import AddNewsUseCase
-from django.core.files.uploadedfile import UploadedFile
 
 
 router = Router(tags=['News'])
@@ -25,6 +24,7 @@ def add_news(
     request,
     schema: CreateNewsSchema,
     token: str = Header(alias='Auth-Token'),
+    file: UploadedFile = File(alias='image'),
 ) -> ApiResponse:
     use_case = AddNewsUseCase(
         ORMCustomerService(),
@@ -35,7 +35,7 @@ def add_news(
         title=schema.title,
         text=schema.text,
         additional_text=schema.additional_text,
-        # image=schema.image,
+        file=file,
     )
 
     return ApiResponse(data=news)

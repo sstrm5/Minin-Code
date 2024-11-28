@@ -10,4 +10,5 @@ class CustomerEntity:
     last_name: str
     role: str
     created_at: datetime
-    organization_name: str = None
+    organization_name: str | None = None
+    avatar: str | None = None

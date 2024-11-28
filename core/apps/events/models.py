@@ -16,11 +16,11 @@ class Event(TimedBaseModel):
         help_text='Например, улица Интернациональная, дом 123, корпус 4, строение 5'
     )
     picture = models.ImageField(
-        upload_to='events/pictures',
+        upload_to='events',
         blank=True,
         null=True,
     )
-    is_visible = models.BooleanField(default=True)
+    is_visible = models.BooleanField(default=False)
     organizer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,

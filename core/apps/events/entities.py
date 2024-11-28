@@ -18,6 +18,7 @@ class Event:
     updated_at: str
 
 
+@dataclass
 class Condition:
     id: int
     text: str

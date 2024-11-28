@@ -28,3 +28,8 @@ class TokenInSchema(Schema):
 
 class RefreshInSchema(Schema):
     refresh_token: str
+
+
+class CustomerUpdateInSchema(Schema):
+    first_name: str
+    last_name: str

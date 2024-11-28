@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+import os
 import time
 from uuid import uuid4
-
+from ninja.files import UploadedFile
 from core.apps.customers.entities import CustomerEntity
 from core.apps.customers.exceptions.customers import RefreshTokenExpiredException, RefreshTokenNotFoundException
 from core.apps.customers.models import Customer
@@ -79,3 +80,12 @@ class ORMCustomerService(BaseCustomerService):
                 raise RefreshTokenExpiredException()
         else:
             raise RefreshTokenNotFoundException()
+
+    def add_avatar(self, file: UploadedFile):
+        if not os.path.exists("media/customers"):
+            os.makedirs("media/customers")
+        file_path = f"customers/{file.name}"
+        with open("media/" + file_path, "wb") as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+        return file_path

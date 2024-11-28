@@ -1,13 +1,16 @@
 from django.http import HttpRequest
 from core.api.v1.questions.schemas import CheckUserExistenceIn, CheckUserExistenceOut
+from core.apps.customers.models import Customer
 from core.apps.questions.containers import get_container
-from ninja import Router, Header
+from ninja import Router, Header, File
 from ninja.errors import HttpError
+from ninja.files import UploadedFile
 
 from core.api.schemas import ApiResponse
 from core.api.v1.customers.schemas import (
     AuthOutSchema,
     CreateAndAuthInSchema,
+    CustomerUpdateInSchema,
     GetAndAuthInSchema,
     RefreshInSchema,
     TokenInSchema,
@@ -95,5 +98,56 @@ def who_user_is_handler(
     token: str = Header(alias='Auth-Token'),
 ) -> ApiResponse:
     service = ORMCustomerService()
-    customer = service.get_user_by_token(token)
+    customer = service.get_by_token(token)
     return ApiResponse(data=customer.role)
+
+
+@router.get('/customer_info', response=ApiResponse)
+def customer_info_handler(
+    request: HttpRequest,
+    token: str = Header(alias='Auth-Token'),
+) -> ApiResponse:
+    service = ORMCustomerService()
+    customer = service.get_by_token(token)
+    if customer.role == 'user':
+        return ApiResponse(data={
+            "customer_avatar": customer.avatar,
+            "name": f'{customer.first_name} {customer.last_name}',
+            "email": customer.email,
+            "events": [event.to_entity() for event in Customer.objects.get(id=customer.id).added_participants.all()],
+            "created_at": customer.created_at,
+        })
+    if customer.role == 'admin':
+        return ApiResponse(data={
+            "customer_avatar": customer.avatar,
+            "name": f'{customer.first_name} {customer.last_name}',
+            "email": customer.email,
+            "created_at": customer.created_at,
+        })
+    if customer.role == 'orginizer':
+        return ApiResponse(data={
+            "customer_avatar": customer.avatar,
+            "name": f'{customer.first_name} {customer.last_name}',
+            "email": customer.email,
+            "created_at": customer.created_at,
+            "organization_name": customer.organization_name,
+            "events": [event.to_entity() for event in Customer.objects.get(id=customer.id).added_participants.all()],
+        })
+
+
+@router.post('/customer_update', response=ApiResponse)
+def customer_update_handler(
+    request: HttpRequest,
+    schema: CustomerUpdateInSchema,
+    token: str = Header(alias='Auth-Token'),
+    file: UploadedFile = File(alias='image'),
+) -> ApiResponse:
+    service = ORMCustomerService()
+    customer = service.get_by_token(token)
+    file_path = service.add_avatar(file)
+    customer = Customer.objects.get(id=customer.id)
+    customer.first_name = schema.first_name
+    customer.last_name = schema.last_name
+    customer.avatar = file_path
+    customer.save()
+    return ApiResponse(data=customer.to_entity())

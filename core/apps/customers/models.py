@@ -75,6 +75,14 @@ class Customer(TimedBaseModel):
         help_text='Название организации, если пользователь представляет организацию',
     )
 
+    avatar = models.ImageField(
+        verbose_name='Аватар пользователя',
+        blank=True,
+        null=True,
+        upload_to='customers/avatars',
+        help_text='Изображение аватара пользователя'
+    )
+
     def __str__(self) -> str:
         return self.email if self.role in ('admin', 'user') else self.organization_name if self.organization_name else 'Не указан'
 
@@ -87,6 +95,7 @@ class Customer(TimedBaseModel):
             created_at=self.created_at,
             role=self.role,
             organization_name=self.organization_name,
+            avatar=self.avatar.url if self.avatar else None,
         )
 
     @classmethod
