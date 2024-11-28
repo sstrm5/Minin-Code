@@ -19,7 +19,7 @@ class AddNewsUseCase:
             # image,
     ):
         customer = self.customer_service.get_by_token(token)
-        if customer is None or customer.role != 'admin':
+        if customer is None or customer.role != 'organization':
             raise ValueError('Invalid token or role')
         customer = Customer.from_entity(customer)
         # file_path = self.news_service.add_picture_to_news(image)

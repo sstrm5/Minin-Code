@@ -30,3 +30,7 @@ class AddEventSchema(Schema):
     title: str
     description: str
     address: str | None
+
+
+class SignSchema(Schema):
+    event_id: int

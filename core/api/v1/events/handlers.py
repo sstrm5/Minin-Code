@@ -1,11 +1,12 @@
 from core.api.schemas import ApiResponse, ListResponse
 from django.http import HttpRequest
-from core.api.v1.events.schemas import AddEventSchema, EventListOutSchema
+from core.api.v1.events.schemas import AddEventSchema, EventListOutSchema, SignSchema
 from core.apps.customers.services.customers import ORMCustomerService
+from core.apps.customers.services.senders import MailSenderService
 from core.apps.events.services import ORMEventsService
 from ninja import Router, Header
 
-from core.apps.events.use_cases import AddEventUseCase
+from core.apps.events.use_cases import AddEventUseCase, SignUseCase
 
 router = Router(tags=['Events'])
 
@@ -29,3 +30,18 @@ def add_event(
     use_case = AddEventUseCase(ORMCustomerService(), ORMEventsService())
     event = use_case.execute(token=token, schema=schema)
     return ApiResponse(data=EventListOutSchema.from_entity(event))
+
+
+@router.post('/sign_event', response=ApiResponse)
+def sign_event(
+    request: HttpRequest,
+    schema: SignSchema,
+    token: str = Header(alias='Auth-Token'),
+):
+    use_case = SignUseCase(
+        customer_service=ORMCustomerService(),
+        event_service=ORMEventsService(),
+        sender_service=MailSenderService(),
+    )
+    event = use_case.execute(token=token, event_id=schema.event_id)
+    return ApiResponse(data=event)

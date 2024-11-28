@@ -76,7 +76,7 @@ class Customer(TimedBaseModel):
     )
 
     def __str__(self) -> str:
-        return self.email if self.role in ('admin', 'user') else self.organization_name
+        return self.email if self.role in ('admin', 'user') else self.organization_name if self.organization_name else 'Не указан'
 
     def to_entity(self) -> CustomerEntity:
         return CustomerEntity(

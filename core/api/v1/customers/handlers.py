@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from core.api.v1.questions.schemas import CheckUserExistenceIn, CheckUserExistenceOut
 from core.apps.questions.containers import get_container
-from ninja import Router
+from ninja import Router, Header
 from ninja.errors import HttpError
 
 from core.api.schemas import ApiResponse
@@ -15,7 +15,7 @@ from core.api.v1.customers.schemas import (
 )
 from core.apps.common.exceptions import ServiceException
 from core.apps.customers.services.auth import BaseAuthService
-from core.apps.customers.services.customers import BaseCustomerService
+from core.apps.customers.services.customers import BaseCustomerService, ORMCustomerService
 
 
 router = Router(tags=['Customers'])
@@ -87,3 +87,13 @@ def check_user_existence_handler(
         return ApiResponse(data=CheckUserExistenceOut(is_user_exists=is_user_exists))
     except Exception as exception:
         raise HttpError(status_code=400, message=exception.message)
+
+
+@router.get('/who_user_is', response=ApiResponse)
+def who_user_is_handler(
+    request: HttpRequest,
+    token: str = Header(alias='Auth-Token'),
+) -> ApiResponse:
+    service = ORMCustomerService()
+    customer = service.get_user_by_token(token)
+    return ApiResponse(data=customer.role)
