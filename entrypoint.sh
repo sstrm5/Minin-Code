@@ -30,8 +30,9 @@
 # Запуск Django-приложения
 # python manage.py runserver 0.0.0.0:8000
 
-python manage.py collectstatic --noinput
+# python manage.py collectstatic --noinput
 python manage.py makemigrations
 python manage.py migrate
-gunicorn core.project.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 2 --timeout 30
-gunicorn --log-file=- core.project.wsgi:application
+# gunicorn core.project.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 2 --timeout 30
+# gunicorn --log-file=- core.project.wsgi:application
+python manage.py runserver 0.0.0.0:8000

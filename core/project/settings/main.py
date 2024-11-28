@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     # first party
     'core.apps.questions.apps.QuestionsConfig',
     'core.apps.customers.apps.CustomersConfig',
+    'core.apps.news.apps.NewsConfig',
+    'core.apps.events.apps.EventsConfig',
 
     # third party
     "corsheaders",

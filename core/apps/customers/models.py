@@ -13,6 +13,12 @@ class Customer(TimedBaseModel):
     def get_refresh_expires_in():
         return int(time.time()) + 1209600
 
+    ROLE_CHOICES = [
+        ('user', 'Обычный пользователь'),
+        ('admin', 'Администратор'),
+        ('organization', 'Организация'),
+    ]
+
     email = models.CharField(
         verbose_name='Почта пользователя',
         unique=True,
@@ -53,8 +59,24 @@ class Customer(TimedBaseModel):
         default=get_refresh_expires_in,
     )
 
+    role = models.CharField(
+        verbose_name='Роль пользователя',
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='user',
+        help_text='Определяет роль пользователя: обычный пользователь, администратор или организация',
+    )
+
+    organization_name = models.CharField(
+        verbose_name='Название организации',
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text='Название организации, если пользователь представляет организацию',
+    )
+
     def __str__(self) -> str:
-        return self.email
+        return self.email if self.role in ('admin', 'user') else self.organization_name
 
     def to_entity(self) -> CustomerEntity:
         return CustomerEntity(
@@ -63,6 +85,8 @@ class Customer(TimedBaseModel):
             first_name=self.first_name,
             last_name=self.last_name,
             created_at=self.created_at,
+            role=self.role,
+            organization_name=self.organization_name,
         )
 
     @classmethod
@@ -72,6 +96,7 @@ class Customer(TimedBaseModel):
             email=entity.email,
             first_name=entity.first_name,
             last_name=entity.last_name,
+            role=entity.role,
             created_at=entity.created_at,
         )
 
