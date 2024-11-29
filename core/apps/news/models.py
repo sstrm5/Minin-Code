@@ -36,7 +36,7 @@ class News(TimedBaseModel):
     )
     is_published = models.BooleanField(
         verbose_name='Опубликовано',
-        default=True,
+        default=False,
     )
 
     class Meta:

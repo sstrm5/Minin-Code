@@ -124,14 +124,14 @@ def customer_info_handler(
             "email": customer.email,
             "created_at": customer.created_at,
         })
-    if customer.role == 'orginizer':
+    if customer.role == 'organization':
         return ApiResponse(data={
             "customer_avatar": customer.avatar,
             "name": f'{customer.first_name} {customer.last_name}',
             "email": customer.email,
             "created_at": customer.created_at,
             "organization_name": customer.organization_name,
-            "events": [event.to_entity() for event in Customer.objects.get(id=customer.id).added_participants.all()],
+            "events": [event.to_entity() for event in Customer.objects.get(id=customer.id).organized_events.all()],
         })
 
 
