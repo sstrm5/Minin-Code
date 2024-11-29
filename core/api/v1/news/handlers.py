@@ -4,6 +4,7 @@ from ninja.files import UploadedFile
 from core.api.schemas import ApiResponse
 from core.api.v1.news.schemas import CreateNewsSchema
 from core.apps.customers.services.customers import ORMCustomerService
+from core.apps.customers.services.senders import MailSenderService
 from core.apps.news.services import ORMNewsService
 from core.apps.news.use_cases import AddNewsUseCase
 
@@ -28,7 +29,7 @@ def add_news(
 ) -> ApiResponse:
     use_case = AddNewsUseCase(
         ORMCustomerService(),
-        ORMNewsService()
+        ORMNewsService(),
     )
     news = use_case.execute(
         token=token,

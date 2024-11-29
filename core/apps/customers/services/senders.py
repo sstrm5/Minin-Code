@@ -60,3 +60,29 @@ class MailSenderService(BaseSenderService):
             from_email=from_email,
             recipient_list=recipient_list,
         )
+
+    def send_event_published_notification(self, customer, event):
+        subject = 'Мероприятие опубликовано'
+        message = f"""Уважаемый организатор, мероприятие {
+            event.title} опубликовано. Дата и время проведения по МСК: {event.start_time}."""
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [customer.email]
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=recipient_list,
+        )
+
+    def send_news_published_notification(self, customer, news):
+        subject = 'Новость опубликована'
+        message = f"""Уважаемый пользователь, новость {
+            news.title} опубликована."""
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [customer.email]
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=recipient_list,
+        )

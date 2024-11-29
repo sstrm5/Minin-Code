@@ -35,6 +35,7 @@ def publish_event(
         event_admin_service=ORMEventsAdminService(),
         event_service=ORMEventsService(),
         customer_service=ORMCustomerService(),
+        sender_service=MailSenderService(),
     )
     event = use_case.execute(token=token, event_id=event_id)
     return ApiResponse(data=event)

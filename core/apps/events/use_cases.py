@@ -71,6 +71,7 @@ class PublishEventAdminUseCase:
     event_admin_service: ORMEventsAdminService
     event_service: ORMEventsService
     customer_service: ORMCustomerService
+    sender_service: MailSenderService
 
     def execute(self, token: str, event_id: int):
         customer = self.customer_service.get_by_token(token=token)
@@ -79,6 +80,10 @@ class PublishEventAdminUseCase:
                 f'User must be logged-in as admin, not {customer.role}'
             )
         event = self.event_admin_service.publish_event(event_id=event_id)
+        self.sender_service.send_event_published_notification(
+            customer=customer,
+            event=event
+        )
         return event
 
 
