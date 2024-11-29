@@ -14,8 +14,9 @@ router = Router(tags=['Events for admins'])
 @router.get('/get_events', response=ApiResponse)
 def get_list_events(
     request: HttpRequest,
-    token: str = Header(alias='Auth-Token'),
+    token: str = Header(alias='HTTP_AUTH_TOKEN'),
 ):
+    print(request.META)
     use_case = GetEventsAdminUseCase(
         event_service=ORMEventsAdminService(),
         customer_service=ORMCustomerService(),
